@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .las {
+            display: flex;
+            /* выстраиваем кружочки в ряд */
+            gap: 5px;
+            /* расстояние между ними */
+            align-items: center;
+            /* по вертикали */
+            position: relative;
+            /* чтобы дочерние абсолютные элементы были внутри */
+        }
+
+        .ball1,
+        .ball2,
+        .ball3,
+        .ball4,
+        .ball5 {
+            position: relative;
+            /* или оставь flex */
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgb(193, 193, 193);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #0d1b35;
+        }
+
+        .scene {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(180deg, #0d1b35 0%, #1a3a5c 50%, #2a5f8a 70%, #3a8fa8 85%, #5ab8c8 92%, #7dd4d8 100%);
+        }
+
+        .sun {
+            position: absolute;
+            top: 12%;
+            right: 12%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffaa00);
+            border-radius: 50%;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud1 {
+            width: 100px;
+            height: 35px;
+            top: 10%;
+        }
+
+        .cloud1::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud1::after {
+            width: 35px;
+            height: 35px;
+            top: -18px;
+            left: 45px;
+        }
+
+        .cloud2 {
+            width: 130px;
+            height: 40px;
+            top: 8%;
+            right: 5%;
+        }
+
+        .cloud2::before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 15px;
+        }
+
+        .cloud2::after {
+            width: 45px;
+            height: 45px;
+            top: -22px;
+            left: 60px;
+        }
+
+        .cloud3 {
+            width: 90px;
+            height: 30px;
+            top: 22%;
+        }
+
+        .cloud3::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 10px;
+        }
+
+        .cloud3::after {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            left: 40px;
+        }
+
+        .ground-left {
+            position: absolute;
+            bottom: 13%;
+            left: 0;
+            width: 22%;
+            height: 40px;
+            background: #2d7a3a;
+            border-radius: 0 20px 0 0;
+        }
+
+        .ground-right {
+            position: absolute;
+            bottom: 13%;
+            right: 0;
+            width: 20%;
+            height: 40px;
+            background: #2d7a3a;
+            border-radius: 20px 0 0 0;
+        }
+
+        .trees {
+            position: absolute;
+            bottom: 14%;
+            left: 2%;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree-top {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid #2d8a4e;
+        }
+
+        .tree-top2 {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 45px solid #3aaa60;
+            margin-top: -15px;
+        }
+
+        .tree-trunk {
+            width: 8px;
+            height: 20px;
+            background: #7a5230;
+        }
+
+        .tree-big .tree-top {
+            border-bottom-width: 55px;
+            border-left-width: 27px;
+            border-right-width: 27px;
+        }
+
+        .tree-big .tree-top2 {
+            border-bottom-width: 60px;
+            border-left-width: 32px;
+            border-right-width: 32px;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 15%;
+            right: 3%;
+        }
+
+        .mountain-body {
+            width: 0;
+            height: 0;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-bottom: 120px solid #8b7355;
+        }
+
+        .mountain-snow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 55px solid transparent;
+            border-right: 55px solid transparent;
+            border-bottom: 45px solid white;
+        }
+
+        .water {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 16%;
+            background: linear-gradient(180deg, #162f9c 0%, #1a7fa0 100%);
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            top: 5px;
+            width: 200%;
+            height: 20px;
+            background: repeating-linear-gradient(90deg, transparent 0, transparent 40px, rgba(255, 255, 255, .15) 40px, rgba(255, 255, 255, .15) 80px);
+        }
+
+        .wave2 {
+            top: 14px;
+            opacity: .5;
+        }
+
+        .steamboat {
+            position: absolute;
+            bottom: 12.5%;
+            margin-left: -40px;
+        }
+
+        .boat-chimney {
+            width: 10px;
+            height: 22px;
+            background: #333;
+            position: absolute;
+            top: -62px;
+            left: 30px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .boat-deck {
+            width: 60px;
+            height: 18px;
+            background: #e8e8e8;
+            border-radius: 3px 3px 0 0;
+            position: absolute;
+            top: -18px;
+            left: 10px;
+        }
+
+        .boat-body {
+            width: 80px;
+            height: 28px;
+            background: #c0392b;
+            border-radius: 0 0 15px 15px;
+            position: relative;
+        }
+
+        .airplane {
+            position: absolute;
+            top: 35%;
+            left: -120px;
+        }
+
+        .plane-body {
+            width: 70px;
+            height: 16px;
+            background: #f0f0f0;
+            border-radius: 8px 20px 8px 8px;
+            position: relative;
+        }
+
+        .plane-wing {
+            position: absolute;
+            top: 3px;
+            left: 20px;
+            width: 30px;
+            height: 10px;
+            background: #ddd;
+            border-radius: 2px 8px 8px 2px;
+            transform: skewX(-10deg);
+        }
+
+        .plane-tail {
+            position: absolute;
+            top: -8px;
+            left: 2px;
+            width: 15px;
+            height: 12px;
+            background: #ccc;
+            border-radius: 2px 2px 0 0;
+            transform: skewX(-5deg);
+        }
+
+        plane-window {
+            position: absolute;
+            top: 4px;
+            left: 40px;
+            width: 6px;
+            height: 6px;
+            background: #87ceeb;
+            border-radius: 50%;
+        }
+
+        .plane-engine {
+            position: absolute;
+            top: 10px;
+            left: 25px;
+            width: 18px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 4px;
+        }
+
+        .plane-label {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: rgba(255, 255, 255, .75);
+            white-space: nowrap;
+            font-family: Georgia, serif;
+            letter-spacing: 1px;
+        }
+
+        .ball1 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            left: 70px;
+            bottom: 140px;
+            border-radius: 50%;
+
+        }
+
+        .ball2 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            left: 70px;
+            bottom: 140px;
+            border-radius: 50%;
+
+        }
+
+        .ball3 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            left: 70px;
+            bottom: 140px;
+            border-radius: 50%;
+
+        }
+
+        .ball4 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            left: 70px;
+            bottom: 140px;
+            border-radius: 50%;
+
+        }
+
+        .ball5 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+            left: 70px;
+            bottom: 140px;
+            border-radius: 50%;
+
+        }
+
+        .airplane {
+            display: flex;
+            align-items: flex-start;
+            /* можно подстроить по вертикали */
+        }
+
+        .las {
+            margin-right: 10px;
+            /* расстояние между дымом и самолётом */
+        }
+
+
+                .ball11 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            border-radius: 50%;
+
+                }
+                       .ball21 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            border-radius: 50%;
+
+                }
+                       .ball31 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            border-radius: 50%;
+
+                }
+                       .ball41 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            border-radius: 50%;
+
+                }
+                       .ball51 {
+            width: 0px;
+            height: 0px;
+            background-color: rgb(193, 193, 193);
+            position: absolute;
+            border-radius: 50%;
+
+                }
+    </style>
+</head>
+
+<body>
+    <div class="scene">
+        <div class="sun"></div>
+
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+
+        <div class="ground-left"></div>
+        <div class="ground-right"></div>
+
+        <div class="trees">
+            <div class="tree">
+                <div class="tree-top"></div>
+                <div class="tree-top2"></div>
+                <div class="tree-trunk"></div>
+            </div>
+            <div class="tree tree-big">
+                <div class="tree-top"></div>
+                <div class="tree-top2"></div>
+                <div class="tree-trunk"></div>
+            </div>
+            <div class="tree">
+                <div class="tree-top"></div>
+                <div class="tree-top2"></div>
+                <div class="tree-trunk"></div>
+            </div>
+        </div>
+
+        <div class="mountain">
+            <div class="mountain-body"></div>
+            <div class="mountain-snow"></div>
+        </div>
+
+        <div class="water">
+            <div class="wave" id="wave1"></div>
+            <div class="wave wave2" id="wave2"></div>
+        </div>
+
+        <div class="steamboat" id="boat">
+            <div class="s1">
+                <div class="ball1">
+
+                </div>
+                <div class="ball2">
+
+                </div>
+                <div class="ball3">
+
+                </div>
+                <div class="ball4">
+
+                </div>
+                <div class="ball5">
+
+                </div>
+            </div>
+            <div class="s2">
+                <img style="width: 100px; height: 100px;" src="https://kira-scrap.ru/KATALOG/MORE/1/344816d5-kopija.png"
+                    alt="">
+            </div>
+        </div>
+
+        <div style="float: left;" class="airplane" id="plane">
+            <div style="float: left;" class="las">
+                <div style="float: left;" class=" ball11">
+
+                </div>
+                <div  style="float: left;" class=" ball21">
+
+                </div>
+                <div  style="float: left;" class=" ball31">
+
+                </div>
+                <div  style="float: left;" class=" ball41">
+
+                </div>
+                <div  style="float: left;" class=" ball51">
+
+                </div>
+            </div>
+            <div style="float: left;" class="plane-body">
+                <div class="plane-tail"></div>
+                <div class="plane-wing"></div>
+                <div class="plane-engine"></div>
+                <div class="plane-window"></div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="script.js"></script>
